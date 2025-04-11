@@ -2,18 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import models
-from app.db import SessionLocal
+from app.db import get_db
 from app.schemas import table as table_schema
 
 router = APIRouter(prefix="/tables", tags=["Tables"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.get("/", response_model=list[table_schema.TableOut])
@@ -25,7 +17,7 @@ def get_tables(db: Session = Depends(get_db)):
 def create_table(
     table: table_schema.TableCreate, db: Session = Depends(get_db)
 ):
-    db_table = models.Table(**table.dict())
+    db_table = models.Table(**table.model_dump())
     db.add(db_table)
     db.commit()
     db.refresh(db_table)

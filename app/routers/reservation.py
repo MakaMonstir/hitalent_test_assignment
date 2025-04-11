@@ -2,19 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import models
-from app.db import SessionLocal
+from app.db import get_db
 from app.schemas import reservation as reservation_schema
 from app.services import reservation_service
 
 router = APIRouter(prefix="/reservations", tags=["Reservations"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.get("/", response_model=list[reservation_schema.ReservationOut])
@@ -36,7 +28,7 @@ def create_reservation(
             status_code=400, detail="Time slot is already booked"
         )
 
-    db_res = models.Reservation(**reservation.dict())
+    db_res = models.Reservation(**reservation.model_dump())
     db.add(db_res)
     db.commit()
     db.refresh(db_res)

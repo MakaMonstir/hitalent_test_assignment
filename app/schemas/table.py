@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class TableBase(BaseModel):
@@ -14,5 +14,5 @@ class TableCreate(TableBase):
 class TableOut(TableBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
