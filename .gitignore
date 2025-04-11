@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.egg-info/
+.eggs/
+.env
+.env.*
+
+# Virtualenv
+venv/
+.venv/
+
+# Alembic
+alembic/versions/*.pyc
+alembic/versions/__pycache__/
+
+# Docker
+*.log
+*.pid
+*.db
+*.sqlite3
+
+# Pytest
+.cache/
+.coverage
+htmlcov/
+*.cover
+
+# MyPy / Ruff / etc
+.mypy_cache/
+.pytest_cache/
+.dmypy.json
+ruff_cache/
+
+# VSCode / IDEs
+.vscode/
+.idea/
+
+# Misc
+dist/
+build/
+*.tar.gz
+*.egg
