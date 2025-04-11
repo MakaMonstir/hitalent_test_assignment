@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app import models, schemas
+from app import models
 from app.db import SessionLocal
+from app.schemas import table as table_schema
 
 router = APIRouter(prefix="/tables", tags=["Tables"])
 
@@ -15,14 +16,14 @@ def get_db():
         db.close()
 
 
-@router.get("/", response_model=list[schemas.table.TableOut])
+@router.get("/", response_model=list[table_schema.TableOut])
 def get_tables(db: Session = Depends(get_db)):
     return db.query(models.Table).all()
 
 
-@router.post("/", response_model=schemas.table.TableOut)
+@router.post("/", response_model=table_schema.TableOut)
 def create_table(
-    table: schemas.table.TableCreate, db: Session = Depends(get_db)
+    table: table_schema.TableCreate, db: Session = Depends(get_db)
 ):
     db_table = models.Table(**table.dict())
     db.add(db_table)

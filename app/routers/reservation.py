@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app import models, schemas
+from app import models
 from app.db import SessionLocal
+from app.schemas import reservation as reservation_schema
 from app.services import reservation_service
 
 router = APIRouter(prefix="/reservations", tags=["Reservations"])
@@ -16,14 +17,14 @@ def get_db():
         db.close()
 
 
-@router.get("/", response_model=list[schemas.reservation.ReservationOut])
+@router.get("/", response_model=list[reservation_schema.ReservationOut])
 def get_reservations(db: Session = Depends(get_db)):
     return db.query(models.Reservation).all()
 
 
-@router.post("/", response_model=schemas.reservation.ReservationOut)
+@router.post("/", response_model=reservation_schema.ReservationOut)
 def create_reservation(
-    reservation: schemas.reservation.ReservationCreate,
+    reservation: reservation_schema.ReservationCreate,
     db: Session = Depends(get_db)
 ):
     start = reservation.reservation_time
