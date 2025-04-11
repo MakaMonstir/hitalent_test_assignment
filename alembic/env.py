@@ -64,7 +64,7 @@ def run_migrations_online() -> None:
 
     from app.db import Base
     from app.models import reservation, table
-
+    target_metadata = Base.metadata
 
     with connectable.connect() as connection:
         context.configure(
