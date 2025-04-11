@@ -1,10 +1,9 @@
-from datetime import timedelta
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import models, schemas
 from app.db import SessionLocal
+from app.services import reservation_service
 
 router = APIRouter(prefix="/reservations", tags=["Reservations"])
 
@@ -28,18 +27,10 @@ def create_reservation(
     db: Session = Depends(get_db)
 ):
     start = reservation.reservation_time
-    end = start + timedelta(minutes=reservation.duration_minutes)
 
-    conflict = db.query(models.Reservation).filter(
-        models.Reservation.table_id == reservation.table_id,
-        models.Reservation.reservation_time < end,
-        (
-            models.Reservation.reservation_time
-            + timedelta(minutes=models.Reservation.duration_minutes)
-        ) > start
-    ).first()
-
-    if conflict:
+    if reservation_service.has_conflict(
+        db, reservation.table_id, start, reservation.duration_minutes
+    ):
         raise HTTPException(
             status_code=400, detail="Time slot is already booked"
         )
